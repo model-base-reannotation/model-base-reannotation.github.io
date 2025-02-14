@@ -134,7 +134,7 @@
                                 </span>
                                 <!-- Code Link. -->
                                 <span class="link-block">
-                                    <a href="https://github.com/NHirose/learning-language-navigation.git"
+                                    <a href="https://github.com/NHirose/Learning-to-Drive-Anywhere-via-MBRA"
                                         class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="fab fa-github-alt"></i>
@@ -176,7 +176,7 @@
             <div class="hero-body">
                 <video id="teaser" disableRemotePlayback autoplay muted loop playsinline fetchpriority="high"
                     poster="./static/images/web_pull.jpeg">
-                    <source src="./static/videos/web_pull.mp4" type="video/mp4">
+                    <source src="./static/videos_mbra/web_pull.mp4" type="video/mp4">
                 </video>
             </div>
         </div>
@@ -190,12 +190,9 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-            The world is filled with a wide variety of objects, ranging from teapots and wine glasses in households, to park benches and traffic cones outdoors. 
-            For robots to be useful, they need the ability to find arbitrary objects described by people. 
-            In this project, we present LeLaN, a novel approach that consumes unlabeled, action-free egocentric data to learn scalable, language-conditioned object navigation. 
-            Our framework leverages the semantic knowledge of large vision and language models to label in-the-wild data from a variety of indoor and outdoor environments. 
-            These annotations include diverse instructions that capture a wide range of objects with varied granularity and noise in their descriptions. We apply LeLaN to label over 130 hours of data collected in real world indoor and outdoor environments, including robot observations, YouTube video tours, and human-collected walking data. 
-            Extensive experiments with over 1000 trials carried out in the real world show that LeLaN enables training a policy from unlabeled action-free videos that outperforms state-of-the-art methods on the challenging zero-shot language-conditioned object navigation tasks while being capable of inference at 4 times their speed on edge compute.
+            We present a system for training long-horizon end-to-end navigation policies capable of generalizing to deployment in highly diverse outdoor and indoor environments. The result is a single end-to-end policy capable of navigation on the scale of hundreds of meters, while generalizing to a broad distribution of unstructured environments.
+To accomplish this, we must make use of every source of data available. While previous efforts to train general navigation policies typically rely on centralized researcher-collected datasets, such data is fundamentally high-quality but limited in scale. We thus turn to crowd-sourced data, which is readily available in large quantities but is relatively low-quality. To address this, we train a simple, short-horizon ``reannotation'' policy, optionally taking advantage of actions from the high-quality dataset, and use this to relabel the low-quality dataset with near-expert actions connecting short-horizon sequences of states.
+The result is LogoNav, a state-of-the-art general navigation policy capable of navigating over long horizons in complex outdoor environments. We test LogoNav's generalization capabilities by evaluating performance in six countries around the world and find it to be a highly capable navigator.
 
             </p>
           </div>
@@ -209,7 +206,7 @@
           <h2 class="title is-3">Video</h2>
           <div class="publication-video">
             <video autoplay controls muted loop playsinline width="100%">
-              <source src="static/videos/overview2.mp4" type="video/mp4">
+              <source src="static/videos_mbra/overview.mp4" type="video/mp4">
             </video>
           </div>
         </div>
