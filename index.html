@@ -220,40 +220,29 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
         <div class="column is-full-width">
           <h2 class="title is-3">Approach</h2>
           <div class="content has-text-justified has-text-centered">
-            <h3 class="title is-4">Data annotation</h3>
+            <h3 class="title is-4">Motivation</h3>
             <p>
-            We propose a novel method that leverages foundation models to label in-the-wild video data for training a language-conditioned navigation policy. 
-            Following figure shows the overview of our data augmentation approach. 
-            Our method is (i) scalable, as it uses abundant and readily available action-free data sources, (ii) efficient, as it leverages all captured objects in the image view during data augmentation, and (iii) generalizable, as it distils state-of-the-art large vision and language models to diverse and semantically meaningful annotations.
+            Our goal in this work is to enable end-to-end training of navigation policies for ground robots that can generalize broadly to a wide range of environments and follow reasonable conventions such as staying on paths and avoiding collisions. This requires large amounts of training data, which we can obtain from low-cost robotic platforms and crowd-sourced human data collection. While these sources can provide large amounts of data, this data is of low quality: the actions might not be consistently good, and even when they are, the sensors and state estimators on the robot might not allow for accurately estimating the next waypoint that corresponds to the human driver's intent. To address this, we propose Model-Based ReAnnotation (MBRA) to relabel data. 
+            </p>          
+            <h3 class="title is-4">Model-based Re-Annotation</h3>
+            <p>
+            In MBRA, at first, we apply the extended Kalman filter to denoise the action commands in the noisy dataset.
+We also prepare the small publicly available navigation datasets with accurate action labels as a starting point for predicting actions. Filtering the dataset is not enough to mitigate noise, so we train a re-annotation model with model-based learning. Since model-based learning is robust for noisy data, we can incorporate both the accurate GNM dataset and the large but noisy FrodoBot 2k dataset to learn a re-annotation model. Since this model learns to predict actions between close image frames, we can directly use this model as a short-horizon goal-image conditioned navigation policy. Then, we use the re-annotation policy to create more useful action labels for trajectories in the large dataset. We use this data to train the long-horizon navigation policy, which can navigate the robot toward the goal pose about 50 meter away.
             </p>
-            <img src="./static/images/system_overview.jpg" />            
-            <h3 class="title is-4">Training dataset</h3>
+            <img src="./static/images_mbra/system_overview.png" />       
+            <h3 class="title is-4">Dataset</h3>
+            <p>
+            We use a <a href="https://huggingface.co/datasets/frodobots/FrodoBots-2K">FrodoBots-2k dataset</a>, which was collected in more than 10 cities around the world by the remote teleoperation. The FrodoBots-2k dataset includes the sequence of the front- and back-side camera image, GPS position, IMU sensor and wheel odometery for about 2000 hours. 
+            </p>                
+                 
+            <h3 class="title is-4">Evaluation around the world</h3>
             <p>
             We use a wide variety of egocentric datasets to train on, including: 1) Indoor Navigation Dataset: image observations from mobile robot trajectories in office building environments (see <a href="https://cvgl.stanford.edu/gonet/dataset/">GO Stanford2</a>, <a href="https://svl.stanford.edu/projects/dvmpc/dataset/">GO Stanford4</a> and <a href="https://sites.google.com/view/sacson-review/huron-dataset?authuser=0">HuRoN(SACSoN)</a> Dataset), 2) \bf YouTube Tour Dataset: YouTube video data of tours in indoor and outdoor environments, and 3) Human-walking Dataset: data collected from walking with a camera in an indoor home setting and outdoor city environments.
-            </p>
-            <h4 class="title is-5"> &#x2022; YouTube Tour Dataset</h4>     
-            We curate about 100 hours of YouTube videos that include vastly diverse domains, which are significantly different from the university campus building settings seen in the Indoor Navigation Dataset.
-            These videos from all over the world cover a broad spectrum of objects, scenes, and camera heights and types, contributing to more generalized model performance.      
+            </p>    
             <center>    
             <video autoplay muted loop playsinline width="90%">
-              <source src="static/videos/map_youtube.mp4" type="video/mp4">
+              <source src="static/videos_mbra/ev_map.mp4" type="video/mp4">
             </video>     
-            </center>                
-            <h4 class="title is-5"> &#x2022; Human-walking Dataset</h4>   
-            To address the limitation, which YouTube videos often have a narrow field of view (FOV), we collect a dataset of additional data by holding a wide FOV (fisheye) camera and collect a dataset by walking in inside and outside environments. 
-            The Human-walking Dataset includes 15.7 hours of data across 11 cities in 3 different countries.    
-            <center>                   
-            <video autoplay muted loop playsinline width="90%">
-              <source src="static/videos/map_human_walking.mp4" type="video/mp4">
-              
-            </video>  
-            </center>                                    
-            <h3 class="title is-4">Policy learning</h3>
-            <p>
-            We train the language-conditioned navigation policy after annotating the in-the-wild videos. 
-            Our cost function includes three objectives for 1) target object reaching, 2) collision avoidance, and 3) velocity smoothness. 
-            Please see the details on our manuscript and the released codes.
-            </p>
           </div>
         </div>
       </div>
@@ -270,7 +259,7 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                 <h2 class="title is-3">Experiment</h2>
 
                 <!-- Interpolating. -->
-                <h3 class="title is-4">Diverse Language Instructions</h3>
+                <h3 class="title is-4">Long-distance Navigation (LogoNav)</h3>
                 <div class="content has-text-justified">
                   <p>
                   We evaluate our trained policy on target object navigation, which tasks the robot with navigating toward a visible target object from the current robot pose, in the various natural environments, which is not seen in the training datasets.
@@ -286,135 +275,19 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                 <div id="results-carousel" class="carousel results-carousel">
                     <div class="item item-bww1">
                         <video poster="" id="bww1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/whiteboard.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/long_dist_park.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-tello">
                         <video poster="" id="tello" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/stairs.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/long_dist_campus.mp4" type="video/mp4">
                         </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/person_sitting.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-soda3-left">
-                        <video poster="" id="soda3-left" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/orange_vertical.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-rfs">
-                        <video poster="" id="rfs" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/orange_bins.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-inside-1">
-                        <video poster="" id="go1-inside-1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/glass_showcase.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-viewpoints">
-                        <video poster="" id="viewpoints" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/fridge.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-inside-2">
-                        <video poster="" id="go1-inside-2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/bust.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-soda3-right">
-                        <video poster="" id="soda3-right" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/brick_stairs.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-soda3-right">
-                        <video poster="" id="soda3-right" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/coffee_machine.mp4" type="video/mp4">
-                        </video>
-                    </div>                    
+                    </div>               
                 </div>
             </div>            
         </div>
-    </section>
+    </section>        
 
-      <section class="section">
-        <div class="container is-max-desktop">
-
-          <div class="columns is-centered">
-
-
-            <!-- Animation. -->
-            <div class="columns is-centered">
-              <div class="column is-full-width">
-                <!-- Interpolating. -->
-                <h3 class="title is-4">Robustness for Noisy Instructions</h3>
-                <div class="content has-text-justified">
-                  <p>
-                  Our method can show the robustness for the noisy instructions, which partially includes wrong words. 
-                  </p>
-                </div>
-            <center>    
-            <video autoplay muted loop playsinline width="80%">
-              <source src="static/videos/robust_perform.mp4" type="video/mp4">
-            </video>             
-            </center>  
-          </div>
-      </section>
-
-      <section class="section">
-        <div class="container is-max-desktop">
-
-          <div class="columns is-centered">
-
-
-            <!-- Animation. -->
-            <div class="columns is-centered">
-              <div class="column is-full-width">
-                <br />
-                <!--/ Interpolating. -->
-
-                <!-- Re-rendering. -->
-                <h3 class="title is-4">Following Pedestrian</h3>
-                <div class="content has-text-justified">
-                  <p>
-                  Due to the fast calculation of our relatively small-size policy on the robot edge controller, our method allows us to follow the dynamic target objects, such as pedestrians. 
-                  </p>
-                </div>
-          </div>
-      </section>
-
-    <!-- Results Carousel -->
-    <section class="hero is-light is-small">
-        <div class="hero-body">
-            <div class="container">
-                <div id="results-carousel" class="carousel results-carousel">
-                    <div class="item item-bww1">
-                        <video poster="" id="bww1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/dynamic_1.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-tello">
-                        <video poster="" id="tello" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/dynamic_2.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/dynamic_3.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/dynamic_4.mp4" type="video/mp4">
-                        </video>
-                    </div>                    
-                </div>
-            </div>
-        </div>
-    </section>
-      
       <section class="section">
         <div class="container is-max-desktop">
 
@@ -445,89 +318,60 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                 <div id="results-carousel" class="carousel results-carousel">
                     <div class="item item-bww1">
                         <video poster="" id="go1_1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/go1_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/quad_6.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-tello">
                         <video poster="" id="d435_1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/d435_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/frodobot_1.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-go1-outside">
                         <video poster="" id="height_1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/height_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/vizbot_1.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-go1-outside">
                         <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/ricoh_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/quad_2.mp4" type="video/mp4">
                         </video>
                     </div>                    
                     <div class="item item-soda3-left">
                         <video poster="" id="d435_2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/d435_2.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-rfs">
-                        <video poster="" id="fisheye_1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/fisheye_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/frodobot_2.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/quad_4.mp4" type="video/mp4">
+                        </video>
+                    </div>                         
+                    
+                    <div class="item item-rfs">
+                        <video poster="" id="fisheye_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/vizbot_2.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/quad_1.mp4" type="video/mp4">
+                        </video>
+                    </div>                         
+                    <div class="item item-go1-outside">
                         <video poster="" id="ricoh_2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/ricoh_2.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/quad_3.mp4" type="video/mp4">
                         </video>
                     </div>                       
                     <div class="item item-go1-inside-1">
                         <video poster="" id="go1_2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/go1_2.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/frodobot_3.mp4" type="video/mp4">
                         </video>
-                    </div>
-                    <div class="item item-viewpoints">
-                        <video poster="" id="d435_3" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/d435_3.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-inside-2">
-                        <video poster="" id="height_2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/height_2.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-soda3-right">
-                        <video poster="" id="fisheye_2" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/fisheye_2.mp4" type="video/mp4">
-                        </video>
-                    </div>
+                    </div>        
                     <div class="item item-go1-outside">
-                        <video poster="" id="ricoh_3" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/ricoh_3.mp4" type="video/mp4">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/quad_5.mp4" type="video/mp4">
                         </video>
-                    </div>                       
-                    <div class="item item-go1-inside-1">
-                        <video poster="" id="go1_3" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/go1_3.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-viewpoints">
-                        <video poster="" id="d435_4" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/d435_4.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-inside-2">
-                        <video poster="" id="height_3" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/height_3.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="ricoh_4" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/ricoh_4.mp4" type="video/mp4">
-                        </video>
-                    </div>                       
-                    <div class="item item-soda3-right">
-                        <video poster="" id="d435_5" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/d435_5.mp4" type="video/mp4">
-                        </video>
-                    </div>                    
+                    </div>                                             
                 </div>
             </div>
         </div>
@@ -542,35 +386,11 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
             <!-- Animation. -->
             <div class="columns is-centered">
               <div class="column is-full-width">
-                <!-- Interpolating. -->
-                <h3 class="title is-4">Collision Avoidance</h3>
-                <div class="content has-text-justified">
-                  <p>
-                  By distilling the navigation foundation model, NoMaD, our policy enables the robots to avoid the collision for the obstacles between the target object and the initial robot location.
-                  </p>
-                </div>
-            <center>    
-            <video autoplay muted loop playsinline width="100%">
-              <source src="static/videos/collision.mp4" type="video/mp4">
-            </video>             
-            </center>  
-          </div>
-      </section>
-
-      <section class="section">
-        <div class="container is-max-desktop">
-
-          <div class="columns is-centered">
-
-
-            <!-- Animation. -->
-            <div class="columns is-centered">
-              <div class="column is-full-width">
                 <br />
                 <!--/ Interpolating. -->
 
                 <!-- Re-rendering. -->
-                <h3 class="title is-4">Multiple Objects</h3>
+                <h3 class="title is-4">Goal image-conditioned navigation (MBRA)</h3>
                 <div class="content has-text-justified">
                   <p>
                   Even when there are objects in the same type as the target object, our method distinguishes them from the prompts and allows navigation toward the correct target objects, 
@@ -586,95 +406,14 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                 <div id="results-carousel" class="carousel results-carousel">
                     <div class="item item-bww1">
                         <video poster="" id="bww1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/multi_1.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/goal_image_1.mp4" type="video/mp4">
                         </video>
                     </div>
                     <div class="item item-tello">
                         <video poster="" id="tello" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/multi_2.mp4" type="video/mp4">
+                            <source src="./static/videos_mbra/goal_image_2.mp4" type="video/mp4">
                         </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/multi_3.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/multi_4.mp4" type="video/mp4">
-                        </video>
-                    </div>                    
-                </div>
-            </div>
-        </div>
-    </section>
-
-      <section class="section">
-        <div class="container is-max-desktop">
-
-          <div class="columns is-centered">
-
-
-            <!-- Animation. -->
-            <div class="columns is-centered">
-              <div class="column is-full-width">
-                <br />
-                <!--/ Interpolating. -->
-
-                <!-- Re-rendering. -->
-                <h3 class="title is-4">Long-distance Navigation with Topological Memory</h3>
-                <div class="content has-text-justified">
-                  <p>
-                  We can use the LeLaN to move toward the far target object, which is not seen in the current observation. 
-                  We leverage the topological memory (stack of pre-collected images) to look for the target object and indentify the target node. 
-                  At first stage (graph navigation phase), we navigate the robot to the target node location by vision-based navigation with the topological memory.
-                  When arrving at the target node, we switch the policy to the LeLan and navigate toward the target object location (final approach phase). 
-                  In our implementation, we use the ViNT in the first graph navigation phase.
-                  </p>
-                </div>
-          </div>
-      </section>
-
-    <!-- Results Carousel -->
-    <section class="hero is-light is-small">
-        <div class="hero-body">
-            <div class="container">
-                <div id="results-carousel" class="carousel results-carousel">
-                    <div class="item item-bww1">
-                        <video poster="" id="bww1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_blue_trash_box.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-tello">
-                        <video poster="" id="tello" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_silver_dishwasher.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_orange_flower.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_green_box.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_green_couch.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_black_cart.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-go1-outside">
-                        <video poster="" id="go1-outside" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos/topo_black_chair.mp4" type="video/mp4">
-                        </video>
-                    </div>                                                                                
+                    </div>                  
                 </div>
             </div>
         </div>
@@ -683,11 +422,11 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
     <section class="section" id="BibTeX">  
       <div class="container is-max-desktop">    
         <h2 class="title">BibTeX</h2>
-        <pre><code> @inproceedings{hirose24lelan,
-        title={LeLaN: Learning A Language-conditioned Navigation Policy from In-the-Wild Video},
-        author={Noriaki Hirose and Catherine Glossop and Ajay Sridhar and Dhruv Shah and Oier Mees and Sergey Levine},
-        booktitle={Conference on Robot Learning},
-        year={2024}
+        <pre><code> @inproceedings{hirose25mbra,
+        title={Learning to Drive Anywhere via Model-Based Reannotation},
+        author={Noriaki Hirose and Lydia Ignatova and Kyle Stachowicz and Catherine Glossop and Sergey Levine and Dhruv Shah},
+        booktitle={arXiv},
+        year={2025}
         } </code></pre>            
       </div>
     </section>
