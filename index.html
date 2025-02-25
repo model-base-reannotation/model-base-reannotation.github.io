@@ -114,7 +114,7 @@
                             <div class="publication-links">
                                 <!-- PDF Link. -->
                                 <span class="link-block">
-                                    <a href="https://arxiv.org/pdf/2410.03603.pdf"
+                                    <a href="https://arxiv.org/"
                                         class="external-link button is-normal is-rounded is-dark">
                                     <span class="icon">
                                     <i class="fas fa-file-pdf"></i>
@@ -124,7 +124,7 @@
                                 </span>                            
                                 <!-- Talk Link. -->
                                 <span class="link-block">
-                                    <a href="https://youtu.be/-zTyhhu0NTY"
+                                    <a href="https://youtu.be/"
                                         class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="fab fa-youtube"></i>
@@ -144,7 +144,7 @@
                                 </span>
                                 <!-- Dataset Link. -->
                                 <span class="link-block">
-                                    <a href="https://drive.google.com/file/d/1IazHcIyPGO7ENswz8_sGCIGBXF8_sZJK/view?usp=sharing"
+                                    <a href="https://"
                                         class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="fas fa-database"></i> </span>
@@ -154,7 +154,7 @@
 
                                 <!-- BibTex -->
                                 <span class="link-block">
-                                    <a href="./static/lelan.bib"
+                                    <a href="./static/mbra.bib"
                                         class="external-link button is-normal is-rounded is-dark">
                                         <span class="icon">
                                             <i class="fas fa-quote-left"></i> </span>
@@ -222,9 +222,9 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
           <div class="content has-text-justified has-text-centered">
             <h3 class="title is-4">Motivation</h3>
             <p>
-            Our goal in this work is to enable end-to-end training of navigation policies for ground robots that can generalize broadly to a wide range of environments and follow reasonable conventions such as staying on paths and avoiding collisions. This requires large amounts of training data, which we can obtain from low-cost robotic platforms and crowd-sourced human data collection. While these sources can provide large amounts of data, this data is of low quality: the actions might not be consistently good, and even when they are, the sensors and state estimators on the robot might not allow for accurately estimating the next waypoint that corresponds to the human driver's intent. To address this, we propose Model-Based ReAnnotation (MBRA) to relabel data. 
+            Our goal in this work is to enable end-to-end training of navigation policies for ground robots that can generalize broadly to a wide range of environments and follow reasonable conventions such as staying on paths and avoiding collisions. This requires large amounts of training data, which we can obtain from low-cost robotic platforms and crowd-sourced human data collection. While these sources can provide large amounts of data, this data is of low quality: the actions might not be consistently good, and even when they are, the sensors and state estimators on the robot might not allow for accurately estimating the next waypoint that corresponds to the human driver's intent. To address this, we propose <b>M</b>odel-<b>B</b>ased <b>R</b>e<b>A</b>nnotation <b>(MBRA)</b> to relabel data. And we train the <b>Lo</b>ng-range <b>Go</b>al pose-conditioned <b>Nav</b>igation policy <b>(LoGoNav)</b> with its relabeled actions. 
             </p>          
-            <h3 class="title is-4">Model-based Re-Annotation</h3>
+            <h3 class="title is-4">Model-based Re-Annotation (MBRA)</h3>
             <p>
             In MBRA, at first, we apply the extended Kalman filter to denoise the action commands in the noisy dataset.
 We also prepare the small publicly available navigation datasets with accurate action labels as a starting point for predicting actions. Filtering the dataset is not enough to mitigate noise, so we train a re-annotation model with model-based learning. Since model-based learning is robust for noisy data, we can incorporate both the accurate GNM dataset and the large but noisy FrodoBot 2k dataset to learn a re-annotation model. Since this model learns to predict actions between close image frames, we can directly use this model as a short-horizon goal-image conditioned navigation policy. Then, we use the re-annotation policy to create more useful action labels for trajectories in the large dataset. We use this data to train the long-horizon navigation policy, which can navigate the robot toward the goal pose about 50 meter away.
@@ -232,12 +232,15 @@ We also prepare the small publicly available navigation datasets with accurate a
             <img src="./static/images_mbra/system_overview.png" />       
             <h3 class="title is-4">Dataset</h3>
             <p>
-            We use a <a href="https://huggingface.co/datasets/frodobots/FrodoBots-2K">FrodoBots-2k dataset</a>, which was collected in more than 10 cities around the world by the remote teleoperation. The FrodoBots-2k dataset includes the sequence of the front- and back-side camera image, GPS position, IMU sensor and wheel odometery for about 2000 hours. 
+            We use a <a href="https://huggingface.co/datasets/frodobots/FrodoBots-2K">FrodoBots-2k dataset</a>, which was collected in more than 10 cities around the world by the remote teleoperation. The FrodoBots-2k dataset includes 2000 hours of gameplay from over 10 cities and was collected as part of FrodoBots AI, where users explore locations worldwide by teleoperating robots to reach target positions. The FrodoBots-2k dataset is significantly larger than other publicly available datasets for vision-based navigation tasks. As shown in our paper, the full version of the FrodoBots-2k dataset is more than 25 times larger than other datasets and includes a diverse set of real robot trajectories teleoperated by humans. The FrodoBots-2k dataset includes the sequence of the front- and back-side camera image, GPS position, IMU sensor and wheel odometery for about 2000 hours. 
+            </p>
+            <p>
+            In addition, we use GNM mixture containing multiple dataset with different robotic platforms such as <a href="https://cvgl.stanford.edu/gonet/dataset/">GO Stanford2</a>, <a href="https://svl.stanford.edu/projects/dvmpc/dataset/">GO Stanford4</a>, <a href="https://sites.google.com/view/sacson-review/huron-dataset?authuser=0">HuRoN(SACSoN)</a>, <a href="https://sites.google.com/view/recon-robot/">RECON</a>, <a href="https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html">SCAND</a>, <a href="https://arxiv.org/abs/1709.10489">CoryHall</a>, <a href="https://github.com/castacks/tartan_drive">TartanDrive</a> and <a href="https://github.com/JHLee0513/semantic_bevnet">Seattle</a>. Since all these dataset are collected with the robots with rich sensor system and teleoperated by experts, action labels are more accurate. 
             </p>                
                  
             <h3 class="title is-4">Evaluation around the world</h3>
             <p>
-            We use a wide variety of egocentric datasets to train on, including: 1) Indoor Navigation Dataset: image observations from mobile robot trajectories in office building environments (see <a href="https://cvgl.stanford.edu/gonet/dataset/">GO Stanford2</a>, <a href="https://svl.stanford.edu/projects/dvmpc/dataset/">GO Stanford4</a> and <a href="https://sites.google.com/view/sacson-review/huron-dataset?authuser=0">HuRoN(SACSoN)</a> Dataset), 2) \bf YouTube Tour Dataset: YouTube video data of tours in indoor and outdoor environments, and 3) Human-walking Dataset: data collected from walking with a camera in an indoor home setting and outdoor city environments.
+            To assess generalization capabilities, we deploy our navigation policies on robots in diverse environments across 6 countries: USA, Mexico, China, Mauritius, Costa Rica, and Brazil. In total, we collect 24 topological graphs and evaluate each goal trajectory. To the best of our knowledge, we are the first to conduct a global evaluation for visual navigation.
             </p>    
             <center>    
             <video autoplay muted loop playsinline width="90%">
@@ -265,28 +268,25 @@ We also prepare the small publicly available navigation datasets with accurate a
                   We evaluate our trained policy on target object navigation, which tasks the robot with navigating toward a visible target object from the current robot pose, in the various natural environments, which is not seen in the training datasets.
                   </p>
                 </div>
+                
+                <h2 class="title is-5">Public park : 330 meters</h2>
+                <div class="content has-text-justified">
+                <center>  
+                <video autoplay controls muted loop playsinline width="80%">
+                  <source src="static/videos_mbra/long_dist_park.mp4" type="video/mp4">
+                </video> 
+                </div>                   
+                </center>           
+                <h2 class="title is-5">University campus (huma-occupied space) : 280 meters</h2>
+                <div class="content has-text-justified">
+                <center>  
+                <video autoplay controls muted loop playsinline width="80%">
+                  <source src="static/videos_mbra/long_dist_campus.mp4" type="video/mp4">
+                </video>     
+                </center>
+                </div>                                                      
           </div>
-      </section>
-
-    <!-- Results Carousel -->
-    <section class="hero is-light is-small">
-        <div class="hero-body">
-            <div class="container">
-                <div id="results-carousel" class="carousel results-carousel">
-                    <div class="item item-bww1">
-                        <video poster="" id="bww1" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos_mbra/long_dist_park.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="item item-tello">
-                        <video poster="" id="tello" autoplay controls muted loop playsinline height="100%">
-                            <source src="./static/videos_mbra/long_dist_campus.mp4" type="video/mp4">
-                        </video>
-                    </div>               
-                </div>
-            </div>            
-        </div>
-    </section>        
+      </section>     
 
       <section class="section">
         <div class="container is-max-desktop">
@@ -304,8 +304,7 @@ We also prepare the small publicly available navigation datasets with accurate a
                 <h3 class="title is-4">Cross Embodiment Navigation</h3>
                 <div class="content has-text-justified">
                   <p>
-                  Given that our proposed method leverages in-the-wild videos recorded by a variety of cameras at different poses for training, it is inherently capable of generalizing to different embodiments. 
-                  To rigorously evaluate our policies' cross-embodiment capabilities, we test our policy on the three different robot setups, 1) quadruped robot, GO1 with PCB-mounted fisheye camera, 2) same mobile robot with different cameras such as Intel Realsense D435i, PCB-mounted fisheye camera, and Ricoh Theta S.
+                  We deploy the long-range goal pose-conditioned navigation policy on another robotic embodiments, quadruped robot, GO1 and Roomba-based prototype mobile robot, VizBot, in an indoor and an outdoor setting. In GO1 and Vizbot, we mount the different camera to investigate the cross-embodiment performance of our policy. We achieve good goal-reaching behavior in long navigation about 100 meters, highlighting the policy's ability to generalize. 
                   </p>
                 </div>
           </div>
@@ -393,7 +392,7 @@ We also prepare the small publicly available navigation datasets with accurate a
                 <h3 class="title is-4">Goal image-conditioned navigation (MBRA)</h3>
                 <div class="content has-text-justified">
                   <p>
-                  Even when there are objects in the same type as the target object, our method distinguishes them from the prompts and allows navigation toward the correct target objects, 
+                  In addition to LoGoNav, we evaluate the goal image-conditioned navigation policy, which is corresponding to our MBRA. Our MBRA can navigate the robot towards a goal up to 3 meters away, so we use a topological memory to move to a further goal position, similar to other vision-based navigation approaches. To collect this goal loop, we teleoperate the robot and record image observations at a fixed frame rate of 1 Hz. To deploy the policy, we start from the initial observation and continuously estimate the closest node from the topological memory. At each time step, we feed the image from the next node as the goal image to our policy to compute the next action. Our MBRA enables us to navigate the robot toward the far goal pose only with visual imformation.
                   </p>
                 </div>
           </div>
@@ -433,7 +432,7 @@ We also prepare the small publicly available navigation datasets with accurate a
 
     <br>
     <center class="is-size-10">
-      The website (<a href="https://github.com/learning-language-navigation/learning-language-navigation.github.io.git">source code</a>) design was adapted from <a href="https://nerfies.github.io" class="external-link"><span
+      The website (<a href="https://github.com/model-base-reannotation/model-base-reannotation">source code</a>) design was adapted from <a href="https://nerfies.github.io" class="external-link"><span
                 class="dnerf">Nerfies</span></a>.
     </center>
     <br>
