@@ -222,7 +222,7 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
           <div class="content has-text-justified has-text-centered">
             <h3 class="title is-4">Motivation</h3>
             <p>
-            Our goal in this work is to enable end-to-end training of navigation policies for ground robots that can generalize broadly to a wide range of environments and follow reasonable conventions such as staying on paths and avoiding collisions. This requires large amounts of training data, which we can obtain from low-cost robotic platforms and crowd-sourced human data collection. While these sources can provide large amounts of data, this data is of low quality: the actions might not be consistently good, and even when they are, the sensors and state estimators on the robot might not allow for accurately estimating the next waypoint that corresponds to the human driver's intent. To address this, we propose <b>M</b>odel-<b>B</b>ased <b>R</b>e<b>A</b>nnotation <b>(MBRA)</b> to relabel data. And we train the <b>Lo</b>ng-range <b>Go</b>al pose-conditioned <b>Nav</b>igation policy <b>(LoGoNav)</b> with its relabeled actions. 
+            Our goal in this work is to enable end-to-end training of navigation policies for ground robots that can generalize broadly to a wide range of environments and follow reasonable conventions such as staying on paths and avoiding collisions. This requires large amounts of training data, which we can obtain from low-cost robotic platforms and crowd-sourced human data collection. While these sources can provide large amounts of data, this data is of low quality: the actions might not be consistently good, and even when they are, the sensors and state estimators on the robot might not allow for accurately estimating the next waypoint that corresponds to the human driver's intent. To address this, we propose <b>M</b>odel-<b>B</b>ased <b>R</b>e<b>A</b>nnotation <b>(MBRA)</b> to relabel data. And we train the <b>Lo</b>ng-range <b>go</b>al pose-conditioned <b>Nav</b>igation policy <b>(LogoNav)</b> with its relabeled actions. 
             </p>          
             <h3 class="title is-4">Model-based Re-Annotation (MBRA)</h3>
             <p>
@@ -265,7 +265,7 @@ We also prepare the small publicly available navigation datasets with accurate a
                 <h3 class="title is-4">Long-distance Navigation (LogoNav)</h3>
                 <div class="content has-text-justified">
                   <p>
-                  We evaluate our trained policy on target object navigation, which tasks the robot with navigating toward a visible target object from the current robot pose, in the various natural environments, which is not seen in the training datasets.
+                  We evaluate our trained LogoNav policy, which tasks the robot with navigating toward the GPS goals  in the various natural environments, which is not seen in the training datasets. To navigate the robot toward the goal pose about 300 meters away, we define a few subgoals before navigation. In navigation, we feed the closest subgoal pose into our network models. 
                   </p>
                 </div>
                 
@@ -277,7 +277,7 @@ We also prepare the small publicly available navigation datasets with accurate a
                 </video> 
                 </div>                   
                 </center>           
-                <h2 class="title is-5">University campus (huma-occupied space) : 280 meters</h2>
+                <h2 class="title is-5">University campus (human-occupied space) : 280 meters</h2>
                 <div class="content has-text-justified">
                 <center>  
                 <video autoplay controls muted loop playsinline width="80%">
@@ -392,7 +392,7 @@ We also prepare the small publicly available navigation datasets with accurate a
                 <h3 class="title is-4">Goal image-conditioned navigation (MBRA)</h3>
                 <div class="content has-text-justified">
                   <p>
-                  In addition to LoGoNav, we evaluate the goal image-conditioned navigation policy, which is corresponding to our MBRA. Our MBRA can navigate the robot towards a goal up to 3 meters away, so we use a topological memory to move to a further goal position, similar to other vision-based navigation approaches. To collect this goal loop, we teleoperate the robot and record image observations at a fixed frame rate of 1 Hz. To deploy the policy, we start from the initial observation and continuously estimate the closest node from the topological memory. At each time step, we feed the image from the next node as the goal image to our policy to compute the next action. Our MBRA enables us to navigate the robot toward the far goal pose only with visual imformation.
+                  In addition to LogoNav, we evaluate the goal image-conditioned navigation policy, which is corresponding to our MBRA. Our MBRA can navigate the robot towards a goal up to 3 meters away, so we use a topological memory to move to a further goal position, similar to other vision-based navigation approaches. To collect this goal loop, we teleoperate the robot and record image observations at a fixed frame rate of 1 Hz. To deploy the policy, we start from the initial observation and continuously estimate the closest node from the topological memory. At each time step, we feed the image from the next node as the goal image to our policy to compute the next action. Our MBRA enables us to navigate the robot toward the far goal pose only with visual imformation.
                   </p>
                 </div>
           </div>
