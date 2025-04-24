@@ -82,7 +82,7 @@
             <div class="container is-max-desktop">
                 <div class="columns is-centered">
                     <div class="column has-text-centered">
-                        <h1 class="title is-2 publication-title">Learning to Drive Anyware via Model-Based Reannotation</h1>                        
+                        <h1 class="title is-2 publication-title">Learning to Drive Anyware with Model-Based Reannotation</h1>                        
                                        
                         <div class="is-size-5 publication-authors">
                             <span class="author-block">
@@ -190,9 +190,7 @@
           <h2 class="title is-3">Abstract</h2>
           <div class="content has-text-justified">
             <p>
-            We present a system for training long-horizon end-to-end navigation policies capable of generalizing for deployment in highly diverse outdoor and indoor environments. The result is a single end-to-end policy capable of navigation on the scale of hundreds of meters, while generalizing to a broad distribution of unstructured environments.
-To accomplish this, we must make use of every source of data available. While previous efforts to train general navigation policies typically rely on centralized researcher-collected datasets, such data is fundamentally high-quality but limited in scale. We thus turn to crowd-sourced data, which is readily available in large quantities but is relatively low-quality. To address this, we train a simple, short-horizon ``reannotation'' policy, optionally taking advantage of actions from the high-quality dataset, and use this to relabel the low-quality dataset with near-expert actions connecting short-horizon sequences of states.
-The result is LogoNav, a state-of-the-art general navigation policy capable of navigating over long horizons in complex outdoor environments. We test LogoNav's generalization capabilities by evaluating performance in six countries around the world and find it to be a highly capable navigator.
+            Developing broadly generalizable visual navigation policies for robots is a significant challenge, primarily constrained by the availability of large-scale, diverse training data. While curated datasets collected by researchers offer high quality, their limited size restricts policy generalization. To overcome this, we explore leveraging abundant, passively collected data sources, including large volumes of crowd-sourced teleoperation data and unlabeled YouTube videos, despite their potential for lower quality or missing action labels. We propose Model-Based ReAnnotation (MBRA), a framework that utilizes a learned short-horizon, model-based expert model to relabel or generate high-quality actions for these passive datasets. This relabeled data is then distilled into LogoNav, a long-horizon navigation policy conditioned on visual goals or GPS waypoints. We demonstrate that LogoNav, trained using MBRA-processed data, achieves state-of-the-art performance, enabling robust navigation over distances exceeding 300 meters in previously unseen indoor and outdoor environments. Our extensive real-world evaluations, conducted across a fleet of robots (including quadrupeds) in six cities on three continents, validate the policy's ability to generalize and navigate effectively even amidst pedestrians in crowded settings. 
 
             </p>
           </div>
@@ -232,6 +230,9 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
             <h3 class="title is-4">Dataset</h3>
             <p>
             We use a <a href="https://huggingface.co/datasets/frodobots/FrodoBots-2K">FrodoBots-2k dataset</a>, which was collected in more than 10 cities around the world with remote teleoperation. The FrodoBots-2k dataset includes 2000 hours of gameplay and was collected as part of FrodoBots AI, where users explore locations worldwide by teleoperating robots to reach target positions. The FrodoBots-2k dataset is significantly larger than other publicly available datasets for vision-based navigation tasks. As shown in our paper, the full version of the FrodoBots-2k dataset is more than 25 times larger than other datasets and includes a diverse set of real robot trajectories teleoperated by humans. The FrodoBots-2k dataset includes the sequence of the front- and back-side camera image, GPS position, IMU sensor and wheel odometery for about 2000 hours. 
+            </p>
+            <p>
+            We also evaluate the ability of MBRA to enable the use of non-robot data. We reannotate 100 hours of action-free in-the-wild YouTube videos, listed in <a href="https://learning-language-navigation.github.io/">LeLaN project</a>, and train a policy with the generated actions. These videos include inside and outside walking tours from 32 different countries across varying weather conditions, time of day, and environment types (urban, rural, etc.).
             </p>
             <p>
             In addition, we use the GNM mixture containing multiple dataset with different robotic platforms such as <a href="https://cvgl.stanford.edu/gonet/dataset/">GO Stanford2</a>, <a href="https://svl.stanford.edu/projects/dvmpc/dataset/">GO Stanford4</a>, <a href="https://sites.google.com/view/sacson-review/huron-dataset?authuser=0">HuRoN(SACSoN)</a>, <a href="https://sites.google.com/view/recon-robot/">RECON</a>, <a href="https://www.cs.utexas.edu/~xiao/SCAND/SCAND.html">SCAND</a>, <a href="https://arxiv.org/abs/1709.10489">CoryHall</a>, <a href="https://github.com/castacks/tartan_drive">TartanDrive</a> and <a href="https://github.com/JHLee0513/semantic_bevnet">Seattle</a>. Since all these dataset are collected with the robots with rich sensor system and teleoperated by experts, action labels are more accurate. 
@@ -341,6 +342,16 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                     </div>
                     <div class="item item-go1-outside">
                         <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/go1_pose_nav_1.mp4" type="video/mp4">
+                        </video>
+                    </div>                       
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/vizbot_pose_nav_1.mp4" type="video/mp4">
+                        </video>
+                    </div>                              
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos_mbra/quad_4.mp4" type="video/mp4">
                         </video>
                     </div>                         
@@ -352,9 +363,29 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                     </div>
                     <div class="item item-go1-outside">
                         <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/go1_pose_nav_2.mp4" type="video/mp4">
+                        </video>
+                    </div>                       
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/vizbot_pose_nav_2.mp4" type="video/mp4">
+                        </video>
+                    </div>                        
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos_mbra/quad_1.mp4" type="video/mp4">
                         </video>
-                    </div>                         
+                    </div>        
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/go1_pose_nav_3.mp4" type="video/mp4">
+                        </video>
+                    </div>                       
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/vizbot_pose_nav_3.mp4" type="video/mp4">
+                        </video>
+                    </div>                                         
                     <div class="item item-go1-outside">
                         <video poster="" id="ricoh_2" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos_mbra/quad_3.mp4" type="video/mp4">
@@ -364,12 +395,28 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
                         <video poster="" id="go1_2" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos_mbra/frodobot_3.mp4" type="video/mp4">
                         </video>
-                    </div>        
+                    </div>       
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/go1_pose_nav_4.mp4" type="video/mp4">
+                        </video>
+                    </div>                       
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/vizbot_pose_nav_4.mp4" type="video/mp4">
+                        </video>
+                    </div>                         
                     <div class="item item-go1-outside">
                         <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
                             <source src="./static/videos_mbra/quad_5.mp4" type="video/mp4">
                         </video>
-                    </div>                                             
+                    </div>          
+                    <div class="item item-go1-outside">
+                        <video poster="" id="ricoh_1" autoplay controls muted loop playsinline height="100%">
+                            <source src="./static/videos_mbra/go1_pose_nav_5.mp4" type="video/mp4">
+                        </video>
+                    </div>                      
+                                                       
                 </div>
             </div>
         </div>
@@ -441,7 +488,7 @@ The result is LogoNav, a state-of-the-art general navigation policy capable of n
       <div class="container is-max-desktop">    
         <h2 class="title">BibTeX</h2>
         <pre><code> @inproceedings{hirose25mbra,
-        title={Learning to Drive Anywhere via Model-Based Reannotation},
+        title={Learning to Drive Anywhere with Model-Based Reannotation},
         author={Noriaki Hirose and Lydia Ignatova and Kyle Stachowicz and Catherine Glossop and Sergey Levine and Dhruv Shah},
         booktitle={arXiv},
         year={2025}
